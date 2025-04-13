@@ -1,1 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Reading Journey</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Global Styles & Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      /* Dark Theme Variables (Default) */
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-tertiary: #0f3460;
+      --text-primary: #e3e3e3;
+      --text-secondary: #a0a0a0;
+      --accent-primary: #e94560;
+      --accent-secondary: #16c79a; /* Green for progress/growth */
+      --card-bg: #2c2c54;
+      --border-color: #4a4a7a;
+      --hero-gradient-start: var(--bg-tertiary);
+      --hero-gradient-end: var(--accent-primary);
+      --tab-inactive-bg: #2a2a4a;
+      --tab-active-bg: var(--bg-secondary);
+      --tab-border: var(--border-color);
+      --modal-bg: var(--bg-primary);
+      --modal-input-bg: var(--bg-secondary);
+      --modal-input-border: var(--border-color);
+      --modal-input-focus-border: var(--accent-primary);
+      --button-update-bg: var(--border-color);
+      --button-update-hover-bg: #5a5a8a;
+      --button-delete-bg: var(--accent-primary);
+      --button-delete-hover-bg: #d73750;
+      --progress-bar-bg: var(--border-color);
+      --progress-bar-fill: var(--accent-secondary);
+      --benefits-bg: rgba(22, 199, 154, 0.1);
+      --benefits-border: var(--accent-secondary);
+      --benefits-text: var(--accent-secondary);
+      --tree-trunk: #a1887f;
+      --tree-leaf: var(--accent-secondary);
+      --tree-leaf-dark: #14a37f;
+      --hero-text: #fff;
+      --hero-button-bg: #fff;
+      --hero-button-text: var(--accent-primary);
+      --hero-button-hover-bg: #f0f0f0;
+      --hero-button-hover-text: var(--hero-gradient-start);
+      --theme-toggle-bg: var(--accent-secondary);
+      --theme-toggle-hover-bg: #11a880;
+      --theme-toggle-text: #fff;
+    }
 
+    body.light-theme {
+      /* Light Theme Variables */
+      --bg-primary: #f4f4f4;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e0e0e0;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --accent-primary: #d9534f; /* Example light theme accent */
+      --accent-secondary: #5cb85c; /* Example light theme green */
+      --card-bg: #ffffff;
+      --border-color: #cccccc;
+      --hero-gradient-start: #5bc0de; /* Example light theme gradient */
+      --hero-gradient-end: #f0ad4e;
+      --tab-inactive-bg: #e9e9e9;
+      --tab-active-bg: #ffffff;
+      --tab-border: #cccccc;
+      --modal-bg: #ffffff;
+      --modal-input-bg: #f9f9f9;
+      --modal-input-border: #cccccc;
+      --modal-input-focus-border: var(--accent-primary);
+      --button-update-bg: #cccccc;
+      --button-update-hover-bg: #bbbbbb;
+      --button-delete-bg: var(--accent-primary);
+      --button-delete-hover-bg: #c9302c;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--accent-secondary);
+      --benefits-bg: rgba(92, 184, 92, 0.1);
+      --benefits-border: var(--accent-secondary);
+      --benefits-text: #4cae4c; /* Darker green for light bg */
+      --tree-trunk: #8d6e63; /* Slightly different brown */
+      --tree-leaf: var(--accent-secondary);
+      --tree-leaf-dark: #4cae4c;
+      --hero-text: #333;
+      --hero-button-bg: var(--accent-primary);
+      --hero-button-text: #fff;
+      --hero-button-hover-bg: #c9302c;
+      --hero-button-hover-text: #fff;
+      --theme-toggle-bg: var(--accent-primary);
+      --theme-toggle-hover-bg: #c9302c;
+      --theme-toggle-text: #fff;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+    }
+    .container {
+      padding: 20px;
+      max-width: 950px;
+      margin: 0 auto;
+      /* Extra top margin to ensure content isn't hidden by modal/fixed elements */
+      margin-top: 120px; /* Adjust if hero height changes */
+    }
+    /* Hero Section */
+    .hero-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+      color: var(--hero-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.8s ease, height 0.8s ease, background 0.3s ease, color 0.3s ease;
+      z-index: 10;
+      text-align: center;
+    }
+    .hero-container.shrink {
+      transform: translateY(-20px); /* Keep small offset */
+      height: 80px; /* Target height */
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      margin: 0 10px;
+      transition: font-size 0.8s ease;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .hero-container.shrink .hero-title {
+      font-size: 1.8rem;
+    }
+    .hero-button {
+      margin-top: 25px;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 50px;
+      background: var(--hero-button-bg);
+      color: var(--hero-button-text);
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    .hero-button:hover {
+      background: var(--hero-button-hover-bg);
+      color: var(--hero-button-hover-text);
+      transform: scale(1.05);
+    }
+    /* Floating Add Book Button */
+    .floating-add-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-secondary);
+      color: #fff;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 12;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .floating-add-btn:hover {
+      transform: scale(1.05);
+    }
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 15px; /* Adjusted slightly below shrunk hero */
+      right: 15px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      background: var(--theme-toggle-bg);
+      color: var(--theme-toggle-text);
+      cursor: pointer;
+      z-index: 11;
+      transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+    }
+    .theme-toggle:hover {
+      background: var(--theme-toggle-hover-bg);
+      transform: scale(1.1);
+    }
+    /* Last Visited & Motivational Quote */
+    #lastVisited {
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-align: right;
+      opacity: 0.8;
+    }
+    .motivational-quote {
+      background: var(--card-bg);
+      border-left: 5px solid var(--accent-secondary);
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-style: italic;
+      color: var(--text-secondary);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+    .motivational-quote p { margin: 0; font-size: 1rem; }
+    /* Achievement Section (Growth Tree) */
+    .achievement {
+      background: var(--card-bg);
+      border: 2px dashed var(--accent-secondary);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .achievement h3 {
+      margin-bottom: 8px;
+      font-size: 1.4rem;
+      color: var(--accent-secondary);
+      transition: color 0.3s ease;
+    }
+    .achievement p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+    .achievement .treeGraphic {
+      margin: 5px auto;
+      max-width: 150px;
+      height: auto;
+    }
+    /* Tree SVG Colors */
+    .treeGraphic svg line, .treeGraphic svg rect { stroke: var(--tree-trunk); fill: var(--tree-trunk); transition: stroke 0.3s ease, fill 0.3s ease; }
+    .treeGraphic svg circle { fill: var(--tree-leaf); transition: fill 0.3s ease; }
+    .treeGraphic svg .leaf-dark { fill: var(--tree-leaf-dark); transition: fill 0.3s ease; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--tab-border);
+      margin-bottom: 20px;
+      background-color: var(--bg-secondary);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      background: var(--tab-inactive-bg);
+      flex-grow: 1;
+      text-align: center;
+      border-right: 1px solid var(--tab-border);
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .tab:last-child { border-right: none; }
+    .tab:hover { background: var(--card-bg); color: var(--text-primary); }
+    .tab.active {
+      background: var(--tab-active-bg);
+      border-bottom: 2px solid var(--accent-primary);
+      color: var(--text-primary);
+      position: relative;
+      top: 2px;
+      margin-bottom: -2px;
+    }
+    .tab-content { display: none; }
+    .tab-content.active {
+        display: block;
+        background: var(--bg-secondary);
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+        border: 1px solid var(--tab-border);
+        border-top: none;
+        margin-top: -2px; /* Overlap with tabs bottom border */
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    /* Library / Bookshelf Tab Content */
+    .category-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .category-card:hover { transform: translateY(-3px); }
+    .category-card h3 {
+      color: var(--accent-secondary);
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .category-card ul { list-style: none; padding: 0; }
+    .book-item {
+      background: var(--bg-secondary);
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease;
+    }
+    .book-item:hover { transform: translateY(-3px); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3); }
+    .book-item h4 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 10px; transition: color 0.3s ease; }
+    .book-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      align-items: center;
+      transition: color 0.3s ease;
+    }
+    .book-details small { background: var(--bg-tertiary); padding: 3px 8px; border-radius: 4px; transition: background 0.3s ease; }
+    .book-details .streak { color: var(--accent-secondary); font-weight: 600; transition: color 0.3s ease; }
+    .progress-bar-container {
+      background-color: var(--progress-bar-bg);
+      border-radius: 10px;
+      height: 8px;
+      width: 100%;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: background-color 0.3s ease;
+    }
+    .progress-bar {
+      background-color: var(--progress-bar-fill);
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease-in-out, background-color 0.3s ease;
+    }
+    .benefits {
+      background: var(--benefits-bg);
+      border: 1px solid var(--benefits-border);
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .benefits ul { margin-left: 15px; list-style-type: disc; font-size: 0.8rem; color: var(--benefits-text); transition: color 0.3s ease; }
+    .benefits ul li { margin-bottom: 3px; }
+    .controls { margin-top: 15px; text-align: right; }
+    .update-btn, .delete-btn {
+      border: none;
+      padding: 7px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 8px;
+      transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+      font-size: 0.85rem;
+    }
+    .update-btn { background: var(--button-update-bg); color: var(--text-primary); }
+    .update-btn:hover { background: var(--button-update-hover-bg); transform: translateY(-1px); }
+    .delete-btn { background: var(--button-delete-bg); color: #fff; }
+    .delete-btn:hover { background: var(--button-delete-hover-bg); transform: translateY(-1px); }
+    /* Calendar Section */
+    .calendar-section {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
+    }
+    .calendar-section h2 { border-bottom: none; font-size: 1.3rem; color: var(--text-primary); transition: color 0.3s ease; }
+    .calendar-section p { color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem; transition: color 0.3s ease; }
+    .calendar-section button {
+      background: #4285F4; /* Keeping Google Blue for this button */
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .calendar-section button:hover { background: #357ae8; transform: translateY(-2px); }
+    /* Modal Styles for Add/Edit Form */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 13;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--modal-bg);
+      padding: 25px 30px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      color: var(--text-primary);
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .modal-content h2 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      transition: border-color 0.3s ease;
+    }
+    .modal-content input[type="text"],
+    .modal-content input[type="number"],
+    .modal-content input[type="date"],
+    .modal-content select {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 1px solid var(--modal-input-border);
+      background-color: var(--modal-input-bg);
+      color: var(--text-primary);
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+    .modal-content input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+    .modal-content input:focus, .modal-content select:focus {
+      outline: none;
+      border-color: var(--modal-input-focus-border);
+    }
+    .modal-content button[type="submit"] { /* Target only submit button */
+      width: 100%;
+      background: var(--accent-primary);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .modal-content button[type="submit"]:hover { background: var(--button-delete-hover-bg); transform: translateY(-2px); } /* Use delete hover color for consistency */
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.8rem; }
+      .hero-container.shrink .hero-title { font-size: 1.6rem; }
+      .tab { padding: 10px 15px; font-size: 0.9rem; }
+      .container { margin-top: 100px; } /* Adjust for smaller hero */
+    }
+    @media (max-width: 600px) {
+      .container { padding: 15px; margin-top: 90px; } /* Adjust further */
+      .hero-title { font-size: 2.2rem; }
+      .hero-container.shrink .hero-title { font-size: 1.4rem; }
+      .hero-button { padding: 12px 25px; font-size: 1rem; }
+      .tab { padding: 10px 5px; font-size: 0.8rem; }
+      .book-details { font-size: 0.8rem; gap: 8px; }
+      .controls button { padding: 6px 10px; font-size: 0.8rem; }
+      .achievement .treeGraphic { max-width: 120px; }
+      .modal-content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+  <!-- Hero Section -->
+  <div class="hero-container" id="heroContainer">
+    <h1 class="hero-title">Embark on Your Reading Journey</h1>
+    <button class="hero-button" onclick="startJourney()">Let's Begin</button>
+  </div>
+
+  <!-- Floating Add Book Button (always visible on Library view) -->
+  <button class="floating-add-btn" onclick="openModal()">Add Book</button>
+
+  <!-- Main Content Area -->
+  <div class="container" id="mainContainer">
+    <!-- Last Visited Tracker & Motivational Quote -->
+    <p id="lastVisited"></p>
+    <section class="motivational-quote">
+      <p id="quoteText">Loading quote...</p>
+    </section>
+
+    <!-- Achievement Section (Growth Tree) -->
+    <section class="achievement" id="achievementSection">
+      <h3>Your Growth Tree</h3>
+      <p id="achievementMessage">Let's start reading!</p>
+      <div id="treeGraphic" class="treeGraphic"></div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('library')">My Library</div>
+      <div class="tab" onclick="switchTab('sync')">Calendar Sync</div>
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="tab-contents">
+      <!-- Library Tab -->
+      <div class="tab-content active" data-tab="library">
+        <section class="book-list">
+          <!-- Removed H2 from here, category cards provide titles -->
+          <div id="booksContainer">
+            <p style="text-align: center; color: var(--text-secondary); padding: 20px 0;">Loading your books...</p>
+          </div>
+        </section>
+      </div>
+      <!-- Calendar Sync Tab -->
+      <div class="tab-content" data-tab="sync">
+        <section class="calendar-section">
+          <h2>Google Calendar Sync</h2>
+          <p>Connect your reading sessions to your calendar (Feature coming soon!).</p>
+          <button id="syncCalendar">Sync with Google Calendar</button>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Add/Edit Book Form -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h2 id="modalTitle">Add Book</h2>
+      <form id="bookForm">
+        <input type="hidden" id="bookEditIndex" value="-1" />
+        <select id="bookCategory" required>
+            <option value="" disabled selected>Select Category</option>
+            <option value="Mindset & Growth">Mindset & Growth</option>
+            <option value="Productivity & Focus">Productivity & Focus</option>
+            <option value="Social Skills & Influence">Social Skills & Influence</option>
+            <option value="Habits & Systems">Habits & Systems</option>
+            <option value="Stoicism & Philosophy">Stoicism & Philosophy</option>
+            <option value="Fiction & Literature">Fiction & Literature</option>
+            <option value="Technology & Science">Technology & Science</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="text" id="bookTitle" placeholder="Book Title" required />
+        <input type="number" id="bookProgress" placeholder="Progress (in %)" min="0" max="100" required />
+        <input type="date" id="lastRead" placeholder="Last Read Date" />
+        <input type="number" id="bookStreak" placeholder="Reading Streak (days)" min="0" />
+        <button type="submit" id="saveButton">Add Book</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- Theme Management ---
+    function applyInitialTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        } else {
+            document.body.classList.remove('light-theme'); // Ensure dark if not light or not set
+        }
+    }
+
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-theme');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark'); // Store preference
+    }
+
+    // --- Hero Interaction ---
+    let heroShrunk = false;
+    function startJourney() {
+      const heroContainer = document.getElementById('heroContainer');
+      const mainContainer = document.getElementById('mainContainer');
+      if (!heroShrunk && heroContainer && mainContainer) {
+        heroContainer.classList.add('shrink');
+        // No need to add 'visible' class to mainContainer, adjust margin instead
+        heroShrunk = true;
+      }
+    }
+
+    // --- Tab Switching ---
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      const activeTab = document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`);
+      const activeContent = document.querySelector(`.tab-content[data-tab="${tabName}"]`);
+
+      if (activeTab) activeTab.classList.add('active');
+      if (activeContent) activeContent.classList.add('active');
+    }
+
+    // --- Motivational Quotes ---
+    const quotes = [
+        "The more that you read, the more things you will know...",
+        "Reading is essential for those who seek to rise above the ordinary.",
+        "A reader lives a thousand lives before he dies...",
+        "Books are a uniquely portable magic.",
+        "Wear the old coat and buy the new book.",
+        "Reading gives us someplace to go when we have to stay where we are.",
+        "Develop a passion for learning. If you do, you will never cease to grow."
+    ];
+    function displayRandomQuote() {
+      const quoteEl = document.getElementById('quoteText');
+      if (quoteEl) {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        quoteEl.textContent = `"${quotes[randomIndex]}"`;
+      }
+    }
+
+    // --- Last Visited ---
+    function updateLastVisited() {
+      const lastVisitedEl = document.getElementById('lastVisited');
+      if (lastVisitedEl) {
+        const lastVisited = localStorage.getItem('lastVisited');
+        const now = new Date().toLocaleString();
+        lastVisitedEl.textContent = lastVisited ? "Last visit: " + lastVisited : "Welcome to your Reading Journey!";
+        localStorage.setItem('lastVisited', now);
+      }
+    }
+
+    // --- Book Management ---
+    function getBooks() {
+      // Basic error handling for potentially corrupted localStorage data
+      try {
+        const books = JSON.parse(localStorage.getItem('books'));
+        return Array.isArray(books) ? books : [];
+      } catch (e) {
+        console.error("Error parsing books from localStorage:", e);
+        return []; // Return empty array on error
+      }
+    }
+    function saveBooks(books) {
+      if (Array.isArray(books)) {
+          localStorage.setItem('books', JSON.stringify(books));
+      } else {
+          console.error("Attempted to save non-array as books:", books);
+      }
+    }
+
+    // --- Benefits Mapping ---
+    const benefitsMapping = {
+      "deep work": ["Improved focus", "Distraction management"],
+      "hyperfocus": ["Channel attention", "Targeted focus"],
+      "mindset": ["Growth mindset", "Resilience"],
+      "the art of seduction": ["Social dynamics", "Charisma"],
+      "lok vyavhar": ["Social etiquette", "Communication"],
+      "jeet aapki": ["Self-confidence", "Positive attitude"],
+      "lives of the stoics (ryan holiday)": ["Emotional resilience", "Handling adversity"],
+      "mastery": ["Pursuit of excellence", "Continuous learning"],
+      "atomic habits": ["Habit formation", "Building systems"]
+      // Add more book titles (lowercase) and their benefits here
+    };
+    function getBenefits(title) {
+      if (typeof title !== 'string') return [];
+      const key = title.toLowerCase().trim();
+      return benefitsMapping[key] || [];
+    }
+
+    // --- Initialize Default Books (if none exist) & Data Migration ---
+    function initializeBooks() {
+      const booksExist = localStorage.getItem('books') !== null;
+
+      if (!booksExist) {
+        const defaultBooks = [
+          { title: "Atomic Habits", progress: 50, lastRead: "2023-10-26", streak: 5, category: "Habits & Systems" },
+          { title: "Mindset", progress: 20, lastRead: "2023-10-20", streak: 1, category: "Mindset & Growth" },
+          { title: "Deep Work", progress: 75, lastRead: "2023-10-25", streak: 3, category: "Productivity & Focus" }
+        ];
+        saveBooks(defaultBooks);
+      } else {
+        // Check existing books for missing fields or incorrect types (simple migration)
+        let books = getBooks();
+        let updated = false;
+        books = books.map(book => {
+          // Ensure category exists, default to 'Other'
+          if (!book.category) {
+            book.category = "Other";
+            updated = true;
+          }
+          // Ensure progress is a number, default to 0
+          if (typeof book.progress !== 'number' || isNaN(book.progress)) {
+            book.progress = Number(book.progress) || 0;
+            updated = true;
+          }
+          // Ensure streak is a number, default to 0
+          if (typeof book.streak !== 'number' || isNaN(book.streak)) {
+            book.streak = Number(book.streak) || 0;
+            updated = true;
+          }
+          // Ensure lastRead is a string (basic check)
+          if (book.lastRead && typeof book.lastRead !== 'string') {
+             // Attempt conversion or clear if invalid? For now, just log.
+             console.warn("Invalid lastRead format found for book:", book.title);
+             // book.lastRead = ""; // Optionally clear invalid dates
+             // updated = true;
+          }
+          return book;
+        });
+        if (updated) {
+          console.log("Book data migrated/updated.");
+          saveBooks(books);
+        }
+      }
+    }
+
+    // --- Achievement Status (Growth Tree) ---
+    function updateAchievementStatus() {
+      const books = getBooks();
+      let totalProgress = 0;
+      let count = books.length;
+      books.forEach(book => { totalProgress += Number(book.progress) || 0; }); // Ensure progress is treated as number
+
+      let avgProgress = count > 0 ? Math.round(totalProgress / count) : 0;
+      let message = "";
+      let treeSVG = "";
+
+      // Define tree stages based on average progress
+      if (count === 0) {
+          message = "Add your first book to plant a seed!";
+          treeSVG = `<svg viewBox="0 0 100 100"><text x="50" y="50" text-anchor="middle" font-size="10" fill="var(--text-secondary)">No books yet</text></svg>`;
+      } else if (avgProgress < 10) {
+          message = `Seedling (${avgProgress}% avg): Keep nurturing!`;
+          treeSVG = `<svg viewBox="0 0 100 100"><line x1="50" y1="85" x2="50" y2="60" stroke-width="5"/><circle cx="50" cy="50" r="15"/></svg>`;
+      } else if (avgProgress < 30) {
+          message = `Sapling (${avgProgress}% avg): Taking root!`;
+          treeSVG = `<svg viewBox="0 0 100 100"><rect x="46" y="60" width="8" height="25"/><circle cx="50" cy="45" r="20"/><circle cx="35" cy="50" r="8" class="leaf-dark"/></svg>`;
+      } else if (avgProgress < 60) {
+          message = `Young Tree (${avgProgress}% avg): Flourishing!`;
+          treeSVG = `<svg viewBox="0 0 100 100"><rect x="44" y="55" width="12" height="30"/><circle cx="50" cy="40" r="25"/><circle cx="30" cy="45" r="10"/><circle cx="70" cy="45" r="10" class="leaf-dark"/></svg>`;
+      } else if (avgProgress < 90) {
+          message = `Blooming Tree (${avgProgress}% avg): Dedication shines!`;
+          treeSVG = `<svg viewBox="0 0 100 100"><rect x="42" y="50" width="16" height="35"/><circle cx="50" cy="35" r="30"/><circle cx="25" cy="40" r="12"/><circle cx="75" cy="40" r="12" class="leaf-dark"/><circle cx="50" cy="15" r="10"/></svg>`;
+      } else {
+          message = `Mighty Oak (${avgProgress}% avg): Mastery!`;
+          treeSVG = `<svg viewBox="0 0 100 100"><rect x="40" y="45" width="20" height="40"/><circle cx="50" cy="30" r="35"/><circle cx="20" cy="35" r="15"/><circle cx="80" cy="35" r="15" class="leaf-dark"/><circle cx="50" cy="5" r="12"/></svg>`;
+      }
+
+      const messageEl = document.getElementById('achievementMessage');
+      const graphicEl = document.getElementById('treeGraphic');
+      if (messageEl) messageEl.textContent = message;
+      if (graphicEl) graphicEl.innerHTML = treeSVG;
+    }
+
+    // --- Render Books by Category ---
+    function renderBooks() {
+      const books = getBooks();
+      const container = document.getElementById('booksContainer');
+      if (!container) return;
+
+      container.innerHTML = ''; // Clear previous content
+
+      if (books.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px 0;">Your library is empty. Add a book using the Add Book button!</p>';
+          updateAchievementStatus(); // Update tree for empty state
+          return;
+      }
+
+      // Group books by category
+      const booksByCategory = books.reduce((acc, book, index) => {
+        const category = book.category || 'Other';
+        if (!acc[category]) acc[category] = [];
+        // Store the original index along with the book data
+        acc[category].push({ ...book, originalIndex: index });
+        return acc;
+      }, {});
+
+      // Define desired category order
+      const categoryOrder = [
+        "Mindset & Growth",
+        "Productivity & Focus",
+        "Habits & Systems",
+        "Social Skills & Influence",
+        "Stoicism & Philosophy",
+        "Fiction & Literature",
+        "Technology & Science",
+        "Other"
+      ];
+
+      // Render categories in the specified order
+      categoryOrder.forEach(category => {
+        if (booksByCategory[category]) {
+          const categoryCard = document.createElement('div');
+          categoryCard.className = 'category-card';
+          categoryCard.innerHTML = `<h3>${category}</h3><ul></ul>`;
+          const bookList = categoryCard.querySelector('ul');
+
+          booksByCategory[category].forEach(bookWithIndex => {
+            const { originalIndex, ...book } = bookWithIndex; // Extract original index
+            const li = document.createElement('li');
+            li.className = 'book-item';
+            const benefits = getBenefits(book.title);
+            let benefitsHTML = benefits.length > 0 ? `<div class="benefits"><strong>Key Takeaways:</strong><ul>${benefits.map(b => `<li>${b}</li>`).join('')}</ul></div>` : "";
+
+            // Format date nicely, handle invalid or missing dates
+            let formattedDate = "N/A";
+            if (book.lastRead) {
+                try {
+                    formattedDate = new Date(book.lastRead).toLocaleDateString();
+                } catch (e) {
+                    console.warn("Could not format date:", book.lastRead);
+                }
+            }
+
+            li.innerHTML = `
+              <h4>${book.title}</h4>
+              <div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${book.progress || 0}%;"></div>
+              </div>
+              <div class="book-details">
+                <small>Progress: ${book.progress || 0}%</small>
+                <small>Last Read: ${formattedDate}</small>
+                <small>Streak: <span class="streak">${book.streak || 0} day(s)</span></small>
+              </div>
+              ${benefitsHTML}
+              <div class="controls">
+                <button class="update-btn" onclick="editBook(${originalIndex})">Edit</button>
+                <button class="delete-btn" onclick="deleteBook(${originalIndex})">Delete</button>
+              </div>
+            `;
+            bookList.appendChild(li);
+          });
+          container.appendChild(categoryCard);
+        }
+      });
+
+      // Render any categories not in the predefined order (e.g., if new ones are added later)
+      Object.keys(booksByCategory).forEach(category => {
+          if (!categoryOrder.includes(category)) {
+              // ... (render logic similar to above) ...
+              console.warn("Rendering category not in predefined order:", category);
+              // You might want to duplicate the rendering logic here or refactor it into a function
+          }
+      });
+
+
+      updateAchievementStatus(); // Update tree based on rendered books
+    }
+
+    // --- Modal Functions ---
+    function openModal() {
+      const modalOverlay = document.getElementById('modalOverlay');
+      if (modalOverlay) {
+          modalOverlay.classList.add('active');
+          document.getElementById('modalTitle').textContent = "Add Book";
+          resetForm(); // Ensure form is reset when opening for 'Add'
+      }
+    }
+    function closeModal() {
+      const modalOverlay = document.getElementById('modalOverlay');
+      if (modalOverlay) {
+          modalOverlay.classList.remove('active');
+      }
+    }
+
+    // --- Form Submission (Modal) ---
+    document.getElementById('bookForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const titleInput = document.getElementById('bookTitle');
+      const categoryInput = document.getElementById('bookCategory');
+      const progressInput = document.getElementById('bookProgress');
+      const lastReadInput = document.getElementById('lastRead');
+      const streakInput = document.getElementById('bookStreak');
+      const editIndexInput = document.getElementById('bookEditIndex');
+
+      const title = titleInput.value.trim();
+      const category = categoryInput.value;
+      const progress = progressInput.value; // Keep as string initially for check
+      const lastRead = lastReadInput.value; // Can be empty
+      const streak = streakInput.value || 0; // Default to 0 if empty
+      const editIndex = parseInt(editIndexInput.value, 10);
+
+      // Validation
+      if (!title) { alert("Please enter a book title."); titleInput.focus(); return; }
+      if (!category) { alert("Please select a category."); categoryInput.focus(); return; }
+      if (progress === "" || isNaN(progress) || Number(progress) < 0 || Number(progress) > 100) {
+          alert("Please enter progress between 0 and 100."); progressInput.focus(); return;
+      }
+      if (isNaN(streak) || Number(streak) < 0) {
+          alert("Please enter a valid streak (0 or greater)."); streakInput.focus(); return;
+      }
+
+      let books = getBooks();
+      const bookData = {
+          title,
+          category,
+          progress: Number(progress),
+          lastRead: lastRead || null, // Store null if empty for consistency
+          streak: Number(streak)
+      };
+
+      if (editIndex > -1 && editIndex < books.length) {
+        // Update existing book
+        books[editIndex] = bookData;
+      } else {
+        // Add new book
+        books.push(bookData);
+      }
+
+      saveBooks(books);
+      renderBooks(); // Re-render the entire list
+      closeModal();
+    });
+
+    function resetForm() {
+      const form = document.getElementById('bookForm');
+      const editIndexInput = document.getElementById('bookEditIndex');
+      const saveButton = document.getElementById('saveButton');
+      const modalTitle = document.getElementById('modalTitle');
+
+      if (form) form.reset();
+      if (editIndexInput) editIndexInput.value = "-1";
+      if (categoryInput) categoryInput.value = ""; // Explicitly reset select default
+      if (saveButton) saveButton.textContent = "Add Book";
+      if (modalTitle) modalTitle.textContent = "Add Book";
+    }
+
+    // --- Edit Book ---
+    function editBook(index) {
+      const books = getBooks();
+      if (index < 0 || index >= books.length) {
+          console.error("Invalid index for editBook:", index);
+          return;
+      }
+      const book = books[index];
+
+      // Populate form fields
+      document.getElementById('bookTitle').value = book.title;
+      document.getElementById('bookCategory').value = book.category || 'Other'; // Handle potential missing category
+      document.getElementById('bookProgress').value = book.progress;
+      // Ensure date format is YYYY-MM-DD for the input type="date"
+      document.getElementById('lastRead').value = book.lastRead ? book.lastRead.split('T')[0] : ''; // Handle null/undefined and format
+      document.getElementById('bookStreak').value = book.streak || 0;
+      document.getElementById('bookEditIndex').value = index;
+
+      // Update modal title and button text
+      document.getElementById('saveButton').textContent = "Update Book";
+      document.getElementById('modalTitle').textContent = "Edit Book";
+
+      openModal(); // Open the modal with populated data
+    }
+
+    // --- Delete Book ---
+    function deleteBook(index) {
+      // Find the book title for the confirmation message
+      const books = getBooks();
+      let bookTitle = "this book";
+      if (index >= 0 && index < books.length) {
+          bookTitle = `"${books[index].title}"`;
+      }
+
+      if (confirm(`Are you sure you want to delete ${bookTitle} entry?`)) {
+          if (index >= 0 && index < books.length) {
+              books.splice(index, 1); // Remove the book at the specified index
+              saveBooks(books);
+              renderBooks(); // Re-render the list
+              // No need to resetForm here, as deletion happens outside the modal context
+          } else {
+              console.error("Invalid index for deleteBook:", index);
+          }
+      }
+    }
+
+    // --- Calendar Placeholder ---
+    const syncButton = document.getElementById('syncCalendar');
+    if (syncButton) {
+        syncButton.addEventListener('click', function() {
+          alert("Google Calendar integration feature coming soon!");
+        });
+    }
+
+    // --- Initialize Application ---
+    document.addEventListener('DOMContentLoaded', () => {
+        applyInitialTheme(); // Apply theme preference on load
+        updateLastVisited();
+        displayRandomQuote();
+        initializeBooks(); // Ensure defaults or migrate data
+        renderBooks(); // Initial render
+        // updateAchievementStatus(); // Called within renderBooks now
+        // switchTab('library'); // Not needed, default active state set in HTML
+    });
+  </script>
+</body>
+</html>
